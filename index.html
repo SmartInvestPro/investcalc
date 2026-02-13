@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Inversión Pro</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f4f7f6; color: #2d3436; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .calc-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h1 { font-size: 1.5rem; color: #0984e3; text-align: center; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
+        input { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #dfe6e9; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        button { width: 100%; background-color: #00b894; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { background-color: #00a884; }
+        .result { margin-top: 25px; padding: 15px; background-color: #e8f8f5; border-radius: 8px; text-align: center; }
+        .result span { display: block; font-size: 1.2rem; color: #2d3436; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="calc-card">
+    <h1>📈 InvestCalc Pro</h1>
+    
+    <label>Inversión Inicial ($)</label>
+    <input type="number" id="principal" placeholder="Ej: 1000">
+
+    <label>Tasa de Interés Anual (%)</label>
+    <input type="number" id="interest" placeholder="Ej: 10">
+
+    <label>Años</label>
+    <input type="number" id="years" placeholder="Ej: 5">
+
+    <button onclick="calculate()">CALCULAR RETORNO</button>
+
+    <div class="result" id="result-box" style="display:none;">
+        <small>Total Estimado:</small>
+        <span id="total-value">$0.00</span>
+    </div>
+</div>
+
+<script>
+    function calculate() {
+        const p = parseFloat(document.getElementById('principal').value);
+        const r = parseFloat(document.getElementById('interest').value) / 100;
+        const t = parseFloat(document.getElementById('years').value);
+        
+        if(p > 0 && r > 0 && t > 0) {
+            // Fórmula de interés compuesto: A = P(1 + r)^t
+            const amount = p * Math.pow((1 + r), t);
+            document.getElementById('total-value').innerText = '$' + amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('result-box').style.display = 'block';
+        } else {
+            alert("Por favor rellena todos los campos con números válidos.");
+        }
+    }
+</script>
+
+</body>
+</html>
