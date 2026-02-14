@@ -6,59 +6,55 @@
     <title>InvestCalc Pro - SmartInvestPro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Este bloque de CSS es el que hace que el diseño se vea "Mejor" */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); max-width: 900px; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
-        h2 { color: #2d3436; margin-top: 0; border-bottom: 2px solid #00b894; padding-bottom: 10px; }
-        label { display: block; margin: 15px 0 5px; font-weight: 600; color: #636e72; }
-        input { width: 100%; padding: 12px; border: 2px solid #dfe6e9; border-radius: 8px; outline: none; transition: 0.3s; }
-        input:focus { border-color: #00b894; }
-        button { width: 100%; padding: 15px; background: #00b894; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
-        button:hover { background: #00947a; transform: translateY(-2px); }
-        .footer-pro { grid-column: 1 / -1; text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; }
+        /* Este es el código que cambia el diseño visual */
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 40px; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 950px; width: 100%; display: flex; flex-wrap: wrap; gap: 30px; }
+        .inputs { flex: 1; min-width: 300px; }
+        .visuals { flex: 1.5; min-width: 320px; background: #fafafa; border-radius: 15px; padding: 20px; }
+        h2 { color: #1a73e8; border-bottom: 2px solid #e8f0fe; padding-bottom: 10px; }
+        label { display: block; margin-top: 15px; font-weight: 600; color: #444; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #00b894; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; }
+        button:hover { background: #00947a; }
+        .footer-pro { width: 100%; text-align: center; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; color: #636e72; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="inputs-section">
+    <div class="inputs">
         <h2>📈 InvestCalc Pro</h2>
         <label>Inversión Inicial ($)</label>
         <input type="number" id="principal" value="1000">
         <label>Contribución Mensual ($)</label>
         <input type="number" id="monthly" value="100">
-        <label>Tasa Anual (%)</label>
+        <label>Tasa de Interés Anual (%)</label>
         <input type="number" id="interest" value="8">
-        <label>Años</label>
+        <label>Años de Inversión</label>
         <input type="number" id="years" value="10">
-        <button onclick="calculate()">CALCULAR RETORNO</button>
+        <button onclick="calculate()">GENERAR GRÁFICA</button>
     </div>
-    
-    <div class="results-section">
+
+    <div class="visuals">
         <canvas id="growthChart"></canvas>
-        <h3 id="resultDisplay" style="text-align:center; color: #2d3436; margin-top: 20px;"></h3>
+        <h3 id="resultText" style="text-align:center; color: #2d3436; margin-top: 15px;"></h3>
     </div>
 
     <div class="footer-pro">
-        <p><strong>Descripción:</strong> Herramienta profesional de proyección financiera basada en interés compuesto.</p>
-        <p style="font-size: 1.1rem; color: #2d3436; font-weight: bold;">
-            Desarrollado con éxito por Cristobal Lopez Ayala — 2026
-        </p>
+        <p>Herramienta profesional de proyección financiera basada en interés compuesto.</p>
+        <p style="font-size: 1.1rem; color: #2c3e50;"><strong>Desarrollado con éxito por Cristobal Lopez Ayala — 2026</strong></p>
     </div>
 </div>
 
 <script>
 let myChart;
 function calculate() {
-    const p = parseFloat(document.getElementById('principal').value);
-    const m = parseFloat(document.getElementById('monthly').value);
-    const r = (parseFloat(document.getElementById('interest').value) / 100) / 12;
-    const t = parseFloat(document.getElementById('years').value) * 12;
+    const p = parseFloat(document.getElementById('principal').value) || 0;
+    const m = parseFloat(document.getElementById('monthly').value) || 0;
+    const r = (parseFloat(document.getElementById('interest').value) || 0) / 100 / 12;
+    const t = (parseFloat(document.getElementById('years').value) || 0) * 12;
 
-    let balance = p;
-    let data = [];
-    let labels = [];
+    let data = []; let labels = []; let balance = p;
 
     for (let i = 0; i <= t; i++) {
         if (i > 0) balance = balance * (1 + r) + m;
@@ -68,26 +64,24 @@ function calculate() {
         }
     }
 
-    document.getElementById('resultDisplay').innerText = "Total: $" + balance.toLocaleString();
+    document.getElementById('resultText').innerText = "Resultado: $" + balance.toLocaleString();
 
-    const ctx = document.getElementById('growthChart').getContext('2d');
     if (myChart) myChart.destroy();
+    const ctx = document.getElementById('growthChart').getContext('2d');
     myChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: labels,
             datasets: [{
-                label: 'Crecimiento Estimado',
+                label: 'Crecimiento del Capital ($)',
                 data: data,
-                backgroundColor: '#00b894',
+                backgroundColor: '#1a73e8',
                 borderRadius: 5
             }]
         }
     });
 }
-// Ejecutar al cargar
 window.onload = calculate;
 </script>
-
 </body>
 </html>
